@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="주소(위치)정보, 종합지수(아이콘)"
+        android:textColor="@color/purple_500"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/text_current_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="주소 : "
+        android:textColor="@color/pink"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/text_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="위도, 경도"
+        android:textColor="@color/purple_700"
+        android:textSize="13sp" />
+
+</LinearLayout>
