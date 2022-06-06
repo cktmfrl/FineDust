@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.finedust.model.dust_material.Item;
 import com.example.finedust.util.DialogUtil;
 import com.example.finedust.util.GeoUtil;
 import com.example.finedust.view.FineDustContract;
@@ -32,7 +33,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FineDustFragment.OnLoadFineDustListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -81,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 address, new GeoUtil.GeoUtilListener() {
                     @Override
                     public void onSuccess(String[] addr, double lat, double lng) {
-                        String location = "위도 : " + lat + "\n경도 : " + lng;
-
                         GeoUtil.getFromLocation(MainActivity.this, lat, lng, new GeoUtil.GeoUtilListener() {
                             @Override
                             public void onSuccess(String[] addr, double lat, double lng) {
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                 String city = addr[1];
 
                                 GpsLocationFragment currentLocationFragment = (GpsLocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_gpslocation);
-                                currentLocationFragment.setCurrentLocation(location, address);
+                                currentLocationFragment.setAddress(address);
 
                                 //FineDustFragment.newInstance(addr);
                                 FineDustContract.View view = mFineDustFragment;
@@ -267,21 +266,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // 현재 위치 가져오기(https://developer.android.com/reference/android/location/LocationListener)
     final LocationListener mGpsLocationListener = new LocationListener() {
 
         // 위치 변경 시 호출
-        public void onLocationChanged(Location result) {
+        public void onLocationChanged(Location location) {
             setRequestLocationButtonsState(false);
 
-            String provider = result.getProvider(); // 위치정보 (Ex. network, gps)
-            double longitude = result.getLongitude(); // 위도
-            double latitude = result.getLatitude(); // 경도
-            String location = "위도 : " + latitude + "\n" + "경도 : " + longitude  + "\n" + provider;
-
             GeoUtil.getFromLocation(MainActivity.this,
-                    latitude, longitude, new GeoUtil.GeoUtilListener() {
+                    location.getLatitude(), location.getLongitude(), new GeoUtil.GeoUtilListener() {
                         @Override
                         public void onSuccess(String[] addr, double lat, double lng) {
                             String address = addr[0];
@@ -290,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                             mEditInput.setText(address);
 
                             GpsLocationFragment currentLocationFragment = (GpsLocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_gpslocation);
-                            currentLocationFragment.setCurrentLocation(location, address);
+                            currentLocationFragment.setAddress(address);
 
                             //FineDustFragment.newInstance(addr);
                             FineDustContract.View view = mFineDustFragment;
@@ -333,6 +326,12 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.iv_gpslocation).setVisibility(View.VISIBLE);
             findViewById(R.id.progressBar).setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onLoadFineDust(Item finedust) {
+        GpsLocationFragment currentLocationFragment = (GpsLocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_gpslocation);
+        currentLocationFragment.showFineDust(finedust);
     }
 
 }

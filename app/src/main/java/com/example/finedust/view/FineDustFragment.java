@@ -1,5 +1,7 @@
 package com.example.finedust.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import com.example.finedust.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO : DetailFragment로 클래스명 변경하기
 public class FineDustFragment extends Fragment implements FineDustContract.View {
 
     private static final String TAG = FineDustFragment.class.getSimpleName();
@@ -38,6 +41,12 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
 
     private TextView mLocationTextView;
 
+    private OnLoadFineDustListener mListener;
+
+    public void setOnLoadFineDustListener(OnLoadFineDustListener listener) {
+        mListener = listener;
+    }
+
     public FineDustFragment() {
     }
 
@@ -48,6 +57,19 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
         FineDustFragment fragment = new FineDustFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            mListener = (OnLoadFineDustListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(
+                    ((Activity) context).getLocalClassName() + " 는 OnLoadFineDustListener를 구현해야 합니다."
+            );
+        }
     }
 
     @Nullable
@@ -80,7 +102,6 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
         }
 
         mPresenter = new FineDustPresenter(mRepository, this);
-
         mPresenter.loadFineDustData();
     }
 
@@ -116,6 +137,7 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
                 }
             }
 
+            // TODO : 파서 만들기
             List<Dust> dustItemList = new ArrayList<>();
             dustItemList.add(new Dust("아황산가스(SO2))", selectedItem.getSo2Value(), "ppm", selectedItem.getSo2Grade(), selectedItem.getSo2Flag()));
             dustItemList.add(new Dust("일산화탄소(CO)", selectedItem.getCoValue(), "ppm", selectedItem.getCoGrade(), selectedItem.getCoFlag()));
@@ -126,13 +148,13 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
             dustItemList.add(new Dust("통합대기지수(CAI)", selectedItem.getKhaiValue(), "", selectedItem.getKhaiGrade(), ""));
 
             if (selectedItem != null) {
-                Log.d(TAG, "selectedItem = " + selectedItem.toString());
-                Log.d(TAG, "dustItemList = " + dustItemList.toString());
-
                 ((TextView) getView().findViewById(R.id.text_station_name)).setText("측정소명 : " + selectedItem.getStationName());
-
                 FineDustRecyclerAdapter adapter = new FineDustRecyclerAdapter(dustItemList);
                 mDustListView.setAdapter(adapter);
+
+                if (mListener != null) {
+                    mListener.onLoadFineDust(selectedItem);
+                }
 
                 // log..
                 StringBuilder sb = new StringBuilder();
@@ -192,6 +214,10 @@ public class FineDustFragment extends Fragment implements FineDustContract.View 
         mRepository = new LocationFineDustRepository(getActivity(), city);
         mPresenter = new FineDustPresenter(mRepository, this);
         mPresenter.loadFineDustData();
+    }
+
+    public interface OnLoadFineDustListener {
+        void onLoadFineDust(Item finedust);
     }
 
 }

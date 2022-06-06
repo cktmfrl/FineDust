@@ -42,36 +42,40 @@ public class FineDustRecyclerAdapter extends RecyclerView.Adapter<FineDustRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Dust item = mList.get(position);
-        holder.item.setText(item.getName());
-        holder.value.setText(item.getValue() + " " + item.getUnit());
+        try {
+            Dust item = mList.get(position);
+            holder.item.setText(item.getName());
+            holder.value.setText(item.getValue() + " " + item.getUnit());
 
-        int grade = Integer.parseInt(item.getGrade()); // (1 : 좋음, 2: 보통, 3: 나쁨, 4: 매우나쁨)
-        String gradeStr = "좋음";
-        switch (grade) {
-            case 1:
-                holder.grade_img.setImageResource(R.drawable.ic_grade_very_good_24);
-                holder.grade.setTextColor(Color.BLUE);
-                gradeStr = "좋음";
-                break;
-            case 2:
-                holder.grade_img.setImageResource(R.drawable.ic_grade_good_24);
-                holder.grade.setTextColor(Color.parseColor("#24AE5F"));
-                gradeStr = "보통";
-                break;
-            case 3:
-                holder.grade_img.setImageResource(R.drawable.ic_grade_bad_24);
-                holder.grade.setTextColor(Color.YELLOW);
-                gradeStr = "나쁨";
-                break;
-            case 4:
-                holder.grade_img.setImageResource(R.drawable.ic_grade_very_bad_24);
-                holder.grade.setTextColor(Color.RED);
-                gradeStr = "매우나쁨";
-                break;
+            int grade = Integer.parseInt(item.getGrade()); // (1 : 좋음, 2: 보통, 3: 나쁨, 4: 매우나쁨)
+            String gradeStr = "좋음";
+            switch (grade) {
+                case 1:
+                    holder.grade_img.setImageResource(R.drawable.ic_grade_very_good_24);
+                    holder.grade.setTextColor(Color.BLUE);
+                    gradeStr = "좋음";
+                    break;
+                case 2:
+                    holder.grade_img.setImageResource(R.drawable.ic_grade_good_24);
+                    holder.grade.setTextColor(Color.parseColor("#24AE5F"));
+                    gradeStr = "보통";
+                    break;
+                case 3:
+                    holder.grade_img.setImageResource(R.drawable.ic_grade_bad_24);
+                    holder.grade.setTextColor(Color.YELLOW);
+                    gradeStr = "나쁨";
+                    break;
+                case 4:
+                    holder.grade_img.setImageResource(R.drawable.ic_grade_very_bad_24);
+                    holder.grade.setTextColor(Color.RED);
+                    gradeStr = "매우나쁨";
+                    break;
+            }
+
+            holder.grade.setText(gradeStr);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        holder.grade.setText(gradeStr);
     }
 
     // 뷰 홀더 패턴
