@@ -2,16 +2,18 @@ package com.example.finedust.util;
 
 import android.content.Context;
 
+import com.example.finedust.repository.FineDustService;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class FineDustUtil {
 
-    private FineDustApi mGetApi;
+    private FineDustService mGetApi;
 
     public FineDustUtil(Context context) {
 
@@ -21,8 +23,8 @@ public class FineDustUtil {
         OkHttpClient httpClient = SSLUtil.getUnsafeOkHttpClient().build();
 
         Retrofit mRetrofit = new Retrofit.Builder()
-                .baseUrl(FineDustApi.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(FineDustService.BASE_URL)
+                .addConverterFactory(MoshiConverterFactory.create())
                 .client(httpClient)
                 .build();
 
@@ -37,10 +39,10 @@ public class FineDustUtil {
                         .build())
                 .build();*/
 
-        mGetApi = mRetrofit.create(FineDustApi.class);
+        mGetApi = mRetrofit.create(FineDustService.class);
     }
 
-    public FineDustApi getApi() {
+    public FineDustService getApi() {
         return mGetApi;
     }
 

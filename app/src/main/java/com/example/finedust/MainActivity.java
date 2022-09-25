@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
 
     private static final int REQUEST_PERMISSIONS_CODE = 34;
     private static final String[] REQUEST_PERMESSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-//    private FusedLocationProviderClient mFusedLocationClient;
 
     private EditText mEditInput;
     private FineDustFragment mFineDustFragment;
@@ -57,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         mFineDustFragment = (FineDustFragment) fragmentManager.findFragmentById(R.id.fragment_finedust);
-
-//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     /**
@@ -66,11 +63,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
      * @param view
      */
     public void searchLocation(View view) {
-        if (!checkPermissions()) {
-            requestPermissions();
-            return;
-        }
-
         String address = mEditInput.getText().toString();
 
         if ("".equals(address)) {
@@ -115,11 +107,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
      * @param view
      */
     public void getMyLocation(View view) {
-        if (!checkPermissions()) {
-            requestPermissions();
-            return;
-        }
-
         // 위치 관리자 객체 참조하기
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -163,41 +150,11 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
     }
 
     public void getLastKnownLocation() {
-//        if (!checkPermissions()) {
-//            requestPermissions();
-//            return;
-//        }
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
-        /**mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            GeoUtil.getFromLocation(MainActivity.this,
-                                    location.getLatitude(), location.getLongitude(), new GeoUtil.GeoUtilListener() {
-                                        @Override
-                                        public void onSuccess(String addr, double lat, double lng) {
-                                            Log.d(TAG, "getLastLocation addr = " + addr);
-//                                            FineDustContract.View view = mFineDustFragment;
-//                                            view.reload(addr);
-                                            mFineDustFragment.newInstance(addr);
-                                        }
-
-                                        @Override
-                                        public void onError(String message) {
-                                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    }
-                });
-        */
     }
 
 
@@ -205,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
         // https://developer.android.com/training/location/permissions?hl=ko
         Log.d(TAG, "checkPermissions() ACCESS_FINE_LOCATION = " + ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
         Log.d(TAG, "checkPermissions() ACCESS_COARSE_LOCATION = " + ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION));
-        //Log.d(TAG, "checkPermissions() ACCESS_BACKGROUND_LOCATION = " + ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION));
 
         return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) // 대략적인 위치
                 && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)); // 정확한 위치
@@ -285,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements FineDustFragment.
                             GpsLocationFragment currentLocationFragment = (GpsLocationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_gpslocation);
                             currentLocationFragment.setAddress(address);
 
-                            //FineDustFragment.newInstance(addr);
                             FineDustContract.View view = mFineDustFragment;
                             view.reload(city);
                         }

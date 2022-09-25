@@ -1,4 +1,4 @@
-package com.example.finedust.util;
+package com.example.finedust.repository;
 
 import com.example.finedust.model.FineDust;
 
@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface FineDustApi {
+public interface FineDustService {
 
     String BASE_URL = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/";
 
